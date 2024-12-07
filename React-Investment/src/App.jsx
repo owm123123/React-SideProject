@@ -7,7 +7,7 @@ function App() {
   // 將 userInput & handleInputChange搬到 app.jsx
   // 因為userInput改變時下面的Result component改變
   const [userInput, setUserInput] = useState({
-    initialInvestment: 15000,
+    initialInvestment: 10000,
     annualInvestment: 3000,
     expectedReturn: 6,
     duration: 10,
@@ -19,10 +19,13 @@ function App() {
   // 兩種寫法
   // ((prev) => {return{}}) or ((prev) => ({}))
 
+  // +: 一元加號操作符（Unary Plus Operator）
+  // +"32" => 32 / +"32.4" => 32.4 / +null => 0 / +"abc" => NaN
+
   function handleInputChange(inputId, newValue) {
     setUserInput((prevValue) => ({
       ...prevValue,
-      [inputId]: newValue,
+      [inputId]: +newValue,
     }));
   }
 
@@ -30,7 +33,7 @@ function App() {
     <>
       <Header />
       <UserInput onChange={handleInputChange} userInput={userInput} />
-      <Result user={userInput} />
+      <Result input={userInput} />
     </>
   );
 }
