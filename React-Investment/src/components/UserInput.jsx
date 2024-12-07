@@ -1,7 +1,7 @@
 const UserInput = ({ onChange, userInput }) => {
   return (
     <section id="user-input">
-      <div className="user-group">
+      <div className="input-group">
         <p>
           <label>Initial Investment</label>
           <input
@@ -25,7 +25,7 @@ const UserInput = ({ onChange, userInput }) => {
           />
         </p>
       </div>
-      <div className="user-group">
+      <div className="input-group">
         <p>
           <label>Expected Return</label>
           <input

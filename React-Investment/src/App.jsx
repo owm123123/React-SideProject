@@ -29,11 +29,18 @@ function App() {
     }));
   }
 
+  function isValidDuration() {
+    return userInput.duration > 0;
+  }
+
   return (
     <>
       <Header />
       <UserInput onChange={handleInputChange} userInput={userInput} />
-      <Result input={userInput} />
+      {!isValidDuration() && (
+        <p className="center">Please check Duration greater than 0</p>
+      )}
+      {isValidDuration() && <Result input={userInput} />}
     </>
   );
 }
