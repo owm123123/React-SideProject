@@ -17,8 +17,13 @@ import { useState } from 'react';
 import GameBoard from './components/GameBoard';
 import Player from './components/Player';
 import Log from './components/Log';
+import GameOver from './components/GameOver';
 
 function App() {
+  const [playerName, setPlayerName] = useState({
+    X: 'Player 1',
+    O: 'Player 2',
+  });
   const [turns, setTurns] = useState([]);
 
   let currentPlayer = deriveActivePlayer();
@@ -36,14 +41,21 @@ function App() {
     [null, null, null],
   ];
 
-  let gameBoard = initGameBoard;
+  // 建立一個新array
+  let gameBoard = [...initGameBoard].map((array) => [...array]);
+
+  // 記憶體位置一樣不會re-render
+  // let gameBoard = initGameBoard;
+
   turns.map((turn) => {
     const { square, playerSymbol } = turn;
     const { row, col } = square;
     gameBoard[row][col] = playerSymbol;
   });
 
-  let winer;
+  let winner;
+  const hasDraw = turns.length === 9 && !winner;
+
   WINNING_COMBINATIONS.forEach((combination) => {
     const firstSquareSymbol =
       gameBoard[combination[0].row][combination[0].column];
@@ -57,7 +69,7 @@ function App() {
       firstSquareSymbol === secondSquareSymbol &&
       firstSquareSymbol === thirdSquareSymbol
     ) {
-      winer = firstSquareSymbol;
+      winner = playerName[firstSquareSymbol];
     }
   });
 
@@ -74,6 +86,16 @@ function App() {
     });
   }
 
+  function handleRestart() {
+    setTurns([]);
+  }
+
+  function handlePlayerNameChange(symbol, newName) {
+    setPlayerName((prevPlayerName) => {
+      return { ...prevPlayerName, [symbol]: newName };
+    });
+  }
+
   return (
     <>
       <header>
@@ -87,14 +109,18 @@ function App() {
               initName="Player 1"
               symbol="X"
               isActive={currentPlayer === 'X'}
+              onChangeName={handlePlayerNameChange}
             />
             <Player
               initName="Player 2"
               symbol="O"
               isActive={currentPlayer === 'O'}
+              onChangeName={handlePlayerNameChange}
             />
           </ol>
-          {winer && <p>you won! {winer}</p>}
+          {(winner || hasDraw) && (
+            <GameOver winner={winner} onRestart={handleRestart} />
+          )}
           <GameBoard
             handleChangeSymbol={handleChangeSymbol}
             gameBoard={gameBoard}
