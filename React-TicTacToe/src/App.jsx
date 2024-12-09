@@ -19,20 +19,22 @@ import Log from './components/Log';
 
 function App() {
   const [turns, setTurns] = useState([]);
-  const [currentPlayer, setCurrentPlayer] = useState('X');
+
+  let currentPlayer = deriveActivePlayer();
+  function deriveActivePlayer() {
+    let currentPlayer = 'X';
+    if (turns.length > 0 && turns[0].playerSymbol == 'X') {
+      currentPlayer = 'O';
+    }
+    return currentPlayer;
+  }
 
   function handleChangeSymbol(rowIndex, colIndex) {
-    setCurrentPlayer((prev) => (prev === 'X' ? 'O' : 'X'));
-
     setTurns((prevTurn) => {
-      let cuurentSymbol = 'X';
-      if (prevTurn.length > 0 && prevTurn[0].playerSymbol == 'X') {
-        cuurentSymbol = 'O';
-      }
       const updatesTurns = [
         {
           square: { row: rowIndex, col: colIndex },
-          playerSymbol: cuurentSymbol,
+          playerSymbol: currentPlayer,
         },
         ...prevTurn,
       ];
