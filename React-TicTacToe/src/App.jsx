@@ -19,43 +19,27 @@ import Player from './components/Player';
 import Log from './components/Log';
 import GameOver from './components/GameOver';
 
-function App() {
-  const [playerName, setPlayerName] = useState({
-    X: 'Player 1',
-    O: 'Player 2',
-  });
-  const [turns, setTurns] = useState([]);
+const INITIAL_PLAYER_NAME = {
+  X: 'Player 1',
+  O: 'Player 2',
+};
 
-  let currentPlayer = deriveActivePlayer();
-  function deriveActivePlayer() {
-    let currentPlayer = 'X';
-    if (turns.length > 0 && turns[0].playerSymbol == 'X') {
-      currentPlayer = 'O';
-    }
-    return currentPlayer;
+const INITIAL_GAME_BOARD = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+
+function deriveActivePlayer(turns) {
+  let currentPlayer = 'X';
+  if (turns.length > 0 && turns[0].playerSymbol == 'X') {
+    currentPlayer = 'O';
   }
+  return currentPlayer;
+}
 
-  const initGameBoard = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-
-  // 建立一個新array
-  let gameBoard = [...initGameBoard].map((array) => [...array]);
-
-  // 記憶體位置一樣不會re-render
-  // let gameBoard = initGameBoard;
-
-  turns.map((turn) => {
-    const { square, playerSymbol } = turn;
-    const { row, col } = square;
-    gameBoard[row][col] = playerSymbol;
-  });
-
+function deriveWinner(gameBoard, playerName) {
   let winner;
-  const hasDraw = turns.length === 9 && !winner;
-
   WINNING_COMBINATIONS.forEach((combination) => {
     const firstSquareSymbol =
       gameBoard[combination[0].row][combination[0].column];
@@ -72,6 +56,42 @@ function App() {
       winner = playerName[firstSquareSymbol];
     }
   });
+  return winner;
+}
+
+function derviceGameBoard(turns) {
+  // 建立一個新array
+  let gameBoard = [...INITIAL_GAME_BOARD].map((array) => [...array]);
+  // 記憶體位置一樣不會re-render
+  // let gameBoard = INITIAL_GAME_BOARD;
+
+  turns.map((turn) => {
+    const { square, playerSymbol } = turn;
+    const { row, col } = square;
+    gameBoard[row][col] = playerSymbol;
+  });
+  return gameBoard;
+}
+
+function App() {
+  const [playerName, setPlayerName] = useState(INITIAL_PLAYER_NAME);
+  const [turns, setTurns] = useState([]);
+
+  const currentPlayer = deriveActivePlayer(turns);
+  const gameBoard = derviceGameBoard(turns);
+  const winner = deriveWinner(gameBoard, playerName);
+  const hasDraw = turns.length === 9 && !winner;
+  console.log(winner);
+
+  function handleRestart() {
+    setTurns([]);
+  }
+
+  function handlePlayerNameChange(symbol, newName) {
+    setPlayerName((prevPlayerName) => {
+      return { ...prevPlayerName, [symbol]: newName };
+    });
+  }
 
   function handleChangeSymbol(rowIndex, colIndex) {
     setTurns((prevTurn) => {
@@ -83,16 +103,6 @@ function App() {
         ...prevTurn,
       ];
       return updatesTurns;
-    });
-  }
-
-  function handleRestart() {
-    setTurns([]);
-  }
-
-  function handlePlayerNameChange(symbol, newName) {
-    setPlayerName((prevPlayerName) => {
-      return { ...prevPlayerName, [symbol]: newName };
     });
   }
 
