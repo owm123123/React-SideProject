@@ -12,6 +12,7 @@
 //  return updateBoard;
 // })
 
+import { WINNING_COMBINATIONS } from './winning-combinations';
 import { useState } from 'react';
 import GameBoard from './components/GameBoard';
 import Player from './components/Player';
@@ -28,6 +29,37 @@ function App() {
     }
     return currentPlayer;
   }
+
+  const initGameBoard = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+
+  let gameBoard = initGameBoard;
+  turns.map((turn) => {
+    const { square, playerSymbol } = turn;
+    const { row, col } = square;
+    gameBoard[row][col] = playerSymbol;
+  });
+
+  let winer;
+  WINNING_COMBINATIONS.forEach((combination) => {
+    const firstSquareSymbol =
+      gameBoard[combination[0].row][combination[0].column];
+    const secondSquareSymbol =
+      gameBoard[combination[1].row][combination[1].column];
+    const thirdSquareSymbol =
+      gameBoard[combination[2].row][combination[2].column];
+
+    if (
+      firstSquareSymbol &&
+      firstSquareSymbol === secondSquareSymbol &&
+      firstSquareSymbol === thirdSquareSymbol
+    ) {
+      winer = firstSquareSymbol;
+    }
+  });
 
   function handleChangeSymbol(rowIndex, colIndex) {
     setTurns((prevTurn) => {
@@ -62,7 +94,11 @@ function App() {
               isActive={currentPlayer === 'O'}
             />
           </ol>
-          <GameBoard handleChangeSymbol={handleChangeSymbol} turns={turns} />
+          {winer && <p>you won! {winer}</p>}
+          <GameBoard
+            handleChangeSymbol={handleChangeSymbol}
+            gameBoard={gameBoard}
+          />
         </div>
         <Log turns={turns} />
       </main>

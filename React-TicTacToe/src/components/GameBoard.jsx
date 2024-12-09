@@ -1,17 +1,4 @@
-const initGameBoard = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
-const GameBoard = ({ handleChangeSymbol, turns }) => {
-  let gameBoard = initGameBoard;
-  turns.map((turn) => {
-    const { square, playerSymbol } = turn;
-    const { row, col } = square;
-    gameBoard[row][col] = playerSymbol;
-  });
-
+const GameBoard = ({ handleChangeSymbol, gameBoard }) => {
   return (
     <ol id="game-board">
       {gameBoard.map((row, rowIndex) => (
@@ -19,7 +6,10 @@ const GameBoard = ({ handleChangeSymbol, turns }) => {
           <ol>
             {row.map((playerSymbol, colIndex) => (
               <li key={colIndex}>
-                <button onClick={() => handleChangeSymbol(rowIndex, colIndex)}>
+                <button
+                  onClick={() => handleChangeSymbol(rowIndex, colIndex)}
+                  disabled={playerSymbol !== null}
+                >
                   {playerSymbol}
                 </button>
               </li>
