@@ -1,5 +1,6 @@
 import React from 'react';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 const ResultModal = forwardRef(function ResultModal(
   { targetTime, timeRemaining, onReset },
@@ -14,12 +15,12 @@ const ResultModal = forwardRef(function ResultModal(
     },
   }));
 
-  console.log(timeRemaining);
   const userLost = timeRemaining <= 0;
   const formattedTimeRemaining = (timeRemaining / 1000).toFixed(2);
   const score = (1 - timeRemaining / (targetTime * 1000)) * 100;
 
-  return (
+  return createPortal(
+    // 在dialog中使用ESC也會關閉, 可以加 onClose防範
     <dialog ref={dialogRef} className="result-modal" onClose={onReset}>
       {userLost ? <h2>You lose</h2> : <h2>Your Score: {score}</h2>}
       <p>
@@ -32,7 +33,8 @@ const ResultModal = forwardRef(function ResultModal(
       <form method="dialog">
         <button onClick={onReset}>Close</button>
       </form>
-    </dialog>
+    </dialog>,
+    document.getElementById('modal')
   );
 });
 
