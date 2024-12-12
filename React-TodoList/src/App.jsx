@@ -2,48 +2,70 @@ import { useState } from 'react';
 import NewProject from './components/NewProject';
 import NoProjectSelected from './components/NoProjectSelected';
 import ProjectsSidebar from './components/ProjectsSidebar';
+import SelectedProject from './components/SelectedProject';
 
 function App() {
   const [allProjects, setAllProjects] = useState({
-    allProjectsId: undefined,
+    selectedProjectId: undefined,
     allProjectsContent: [],
   });
 
-  function handleCreateProject() {
+  function handleEntryCreateProject() {
     setAllProjects((prev) => ({
       ...prev,
-      allProjectsId: null,
+      selectedProjectId: null,
+    }));
+  }
+
+  function handleCancelProject() {
+    setAllProjects((prev) => ({
+      ...prev,
+      selectedProjectId: undefined,
+    }));
+  }
+
+  function handleSelectedProject(id) {
+    setAllProjects((prev) => ({
+      ...prev,
+      selectedProjectId: id,
     }));
   }
 
   function handleAddProject(project) {
     setAllProjects((prev) => {
       const newProject = {
-        projectDate: project,
+        projectData: project,
         id: Math.random(),
       };
       return {
         ...prev,
-        allProjectsId: undefined,
+        selectedProjectId: undefined,
         allProjectsContent: [...prev.allProjectsContent, newProject],
       };
     });
   }
 
-  console.log(allProjects);
+  const selectedProject = allProjects.allProjectsContent.find(
+    (project) => project.id === allProjects.selectedProjectId
+  );
+  let conent = <SelectedProject project={selectedProject} />;
 
-  let conent;
-  if (allProjects.allProjectsId === null) {
-    conent = <NewProject onAdd={handleAddProject} />;
-  } else if (allProjects.allProjectsId === undefined) {
-    conent = <NoProjectSelected handleCreateProject={handleCreateProject} />;
+  if (allProjects.selectedProjectId === null) {
+    conent = (
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelProject} />
+    );
+  } else if (allProjects.selectedProjectId === undefined) {
+    conent = (
+      <NoProjectSelected handleCreateProject={handleEntryCreateProject} />
+    );
   }
 
   return (
     <main className="h-screen my-8 flex gap-8">
       <ProjectsSidebar
         allProjects={allProjects}
-        handleCreateProject={handleCreateProject}
+        handleCreateProject={handleEntryCreateProject}
+        handleSelectedProject={handleSelectedProject}
       />
       {conent}
     </main>
