@@ -1,6 +1,13 @@
 import React from 'react';
+import Tasks from './Tasks';
 
-export default function SelectedProject({ project, onDelete }) {
+export default function SelectedProject({
+  project,
+  onDelete,
+  onAddTask,
+  onDeleteTask,
+  tasks,
+}) {
   const { projectData } = project;
   const formattedDate = new Date(projectData.dueDate).toLocaleDateString(
     'en-US',
@@ -17,13 +24,16 @@ export default function SelectedProject({ project, onDelete }) {
           <h1 className="text-3xl font-bold text-stone-600 mb-2">
             {projectData.title}
           </h1>
-          <button onClick={onDelete}>Delete</button>
+          <button onClick={onDelete} className="text-red-600">
+            Delete
+          </button>
         </div>
         <p className="mb-4 text-stone-400">{formattedDate}</p>
         <p className="text-stone-600 whitespace-pre-wrap">
           {projectData.description}
         </p>
       </header>
+      <Tasks onAdd={onAddTask} onDelete={onDeleteTask} tasks={tasks} />
     </div>
   );
 }
