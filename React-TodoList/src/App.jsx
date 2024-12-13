@@ -24,6 +24,16 @@ function App() {
     }));
   }
 
+  function handleDeleteProject() {
+    setAllProjects((prev) => ({
+      ...prev,
+      selectedProjectId: undefined,
+      allProjectsContent: allProjects.allProjectsContent.filter(
+        (product) => product.id !== selectedProject.id
+      ),
+    }));
+  }
+
   function handleSelectedProject(id) {
     setAllProjects((prev) => ({
       ...prev,
@@ -48,7 +58,9 @@ function App() {
   const selectedProject = allProjects.allProjectsContent.find(
     (project) => project.id === allProjects.selectedProjectId
   );
-  let conent = <SelectedProject project={selectedProject} />;
+  let conent = (
+    <SelectedProject project={selectedProject} onDelete={handleDeleteProject} />
+  );
 
   if (allProjects.selectedProjectId === null) {
     conent = (
