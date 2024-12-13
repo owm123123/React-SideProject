@@ -70,14 +70,12 @@ function App() {
   const cartCtxValue = {
     items: shoppingCart.items,
     addItemToCart: handleAddItemToCart,
+    updateCartItemQuantity: handleUpdateCartItemQuantity,
   };
 
   return (
     <CartContext.Provider value={cartCtxValue}>
-      <Header
-        cart={shoppingCart}
-        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
-      />
+      <Header />
       <Shop>
         <ul id="products">
           {DUMMY_PRODUCTS.map((product) => (
