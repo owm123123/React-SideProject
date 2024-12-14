@@ -9,7 +9,27 @@ import logoImg from './assets/logo.png';
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
+  const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState([]);
+
+  // navigator: brower info (類似 window)
+  // user info: navigator.userAgent
+  // 硬體狀態
+  // 離線、上線
+
+  // navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
+  // successCallback: (position) => {} (並填) excute when success
+  // errorCallback: (error) => {} (選填) execute when error
+  // option: () => {} (選填) get position method
+  navigator.geolocation.getCurrentPosition((position) => {
+    const sortedPlaces = sortPlacesByDistance(
+      AVAILABLE_PLACES,
+      position.coords.latitude,
+      position.coords.longitude
+    );
+
+    setAvailablePlaces(sortedPlaces);
+  });
 
   function handleStartRemovePlace(id) {
     modal.current.open();
@@ -63,7 +83,7 @@ function App() {
         />
         <Places
           title="Available Places"
-          places={AVAILABLE_PLACES}
+          places={availablePlaces}
           onSelectPlace={handleSelectPlace}
         />
       </main>
