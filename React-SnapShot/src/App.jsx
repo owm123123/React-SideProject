@@ -24,15 +24,7 @@ function App() {
   const selectedPlace = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState(storepickedPlaces);
-
-  // unnecessary use Effect
-  // useEffect(() => {
-  //   const storedIds = JSON.parse(localStorage.getItem('selectedPlaces') || []);
-  //   console.log(storedIds);
-  //   setPickedPlaces(
-  //     AVAILABLE_PLACES.filter((place) => storedIds.indexOf(place.id) !== -1)
-  //   );
-  // }, []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // navigator: brower info (類似 window)
   // user info: navigator.userAgent
@@ -60,12 +52,12 @@ function App() {
   }, []);
 
   function handleStartRemovePlace(id) {
-    modal.current.open();
+    setIsModalOpen(true);
     selectedPlace.current = id;
   }
 
   function handleStopRemovePlace() {
-    modal.current.close();
+    setIsModalOpen(false);
   }
 
   function handleSelectPlace(id) {
@@ -91,7 +83,7 @@ function App() {
     setPickedPlaces((prevPickedPlaces) =>
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
-    modal.current.close();
+    setIsModalOpen(false);
 
     const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
     localStorage.setItem(
@@ -102,7 +94,7 @@ function App() {
 
   return (
     <>
-      <Modal ref={modal}>
+      <Modal ref={modal} open={isModalOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
