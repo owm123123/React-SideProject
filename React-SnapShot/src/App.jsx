@@ -15,7 +15,6 @@ const storepickedPlaces = storedIds.map((id) => placesMap.get(id));
 // const storepickedPlaces = AVAILABLE_PLACES.filter(
 //   (place) => storedIds.indexOf(place.id) !== -1
 // );
-
 // const storepickedPlaces = storedIds.map((id) =>
 //   AVAILABLE_PLACES.find((price) => price.id === id)
 // );
