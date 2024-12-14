@@ -8,7 +8,7 @@ export const CartContext = createContext({
 });
 
 function cartReducer(state, action) {
-  console.dir(action);
+  console.dir(state);
   if (action.type === 'ADD_ITEM') {
     const updatedItems = [...state.items];
 
@@ -28,7 +28,6 @@ function cartReducer(state, action) {
       const product = DUMMY_PRODUCTS.find(
         (product) => product.id === action.payload.id
       );
-      console.log('product', product);
       updatedItems.push({
         id: action.payload.id,
         name: product.title,
