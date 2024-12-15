@@ -1,22 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import ProgressBar from './ProgressBar';
 
+const TIMER = 3000;
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
-  // need useEffect because still execute after user cancel
-  // setTimeout(() => {
-  //   onConfirm();
-  // }, 3000);
-
   useEffect(() => {
-    console.log('start timerout');
+    console.log('Starter Timerout');
     const timer = setTimeout(() => {
       onConfirm();
-    }, 3000);
+    }, TIMER);
 
+    // 一定會在重新render之前執行
     return () => {
-      console.log('clear timerout');
+      console.log('Clear Timerout');
       clearTimeout(timer);
     };
-  }, []);
+    // dependency array 不能放 function or object 這種比對是 reference
+    // 這時需要用 useCallBack() 將 onConfirm 這個 function記憶化
+  }, [onConfirm]);
 
   return (
     <div id="delete-confirmation">
@@ -30,6 +30,7 @@ export default function DeleteConfirmation({ onConfirm, onCancel }) {
           Yes
         </button>
       </div>
+      <ProgressBar timer={TIMER} />
     </div>
   );
 }
