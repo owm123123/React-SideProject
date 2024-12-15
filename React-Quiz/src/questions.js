@@ -1,3 +1,4 @@
+// 加設所有題型的正確答案都是answers[0],所以你需要sort打亂answers排序
 export default [
   {
     id: 'q1',
