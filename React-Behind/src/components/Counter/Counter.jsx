@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import IconButton from '../UI/IconButton.jsx';
 import MinusIcon from '../UI/Icons/MinusIcon.jsx';
@@ -36,6 +36,17 @@ export default function Counter({ initialCount }) {
   function addCountId() {
     return (countId.current += 1);
   }
+
+  // 父層觸發子層渲染的方式
+  // 想要因為傳入Props來達到局部的改變,可以用 useEffect(() => {}, [Props])
+  // 想要整個子元件整個重新渲染,可以在父元件加上key來達到效果
+
+  // 局部渲染 => useEffect
+  // 整個渲染 => key
+
+  // useEffect(() => {
+  //   setCounter(initialCount);
+  // }, [initialCount]);
 
   const handleDecrement = useCallback(function handleDecrement() {
     setCounter((prevCounter) => prevCounter - 1);
