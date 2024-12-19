@@ -1,11 +1,12 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 
 import Places from './components/Places.jsx';
 import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
-import { fetchUpdatePlaces } from '../http.js';
+import { fetchUpdatePlaces, fetchGetUserPlaces } from '../http.js';
+import Error from './components/Error.jsx';
 
 function App() {
   const selectedPlace = useRef();
@@ -13,6 +14,30 @@ function App() {
   const [userPlaces, setUserPlaces] = useState([]);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const [updatePlacesError, setUpdatePlacesError] = useState();
+
+  const [isFetching, setIsFetching] = useState(true);
+
+  const [fetchUserPlacesError, setFetchUserPlacesError] = useState();
+
+  useEffect(() => {
+    setIsFetching(true);
+    async function getUserPlaces() {
+      try {
+        const places = await fetchGetUserPlaces();
+        setUserPlaces(places);
+        setIsFetching(false);
+      } catch (error) {
+        setFetchUserPlacesError((prev) => ({
+          ...prev,
+          message: error.message || 'Failed to user places',
+        }));
+        setIsFetching(false);
+      }
+    }
+    getUserPlaces();
+  }, []);
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -35,20 +60,58 @@ function App() {
     });
 
     try {
-      const message = await fetchUpdatePlaces([selectedPlace, ...userPlaces]);
-    } catch (error) {}
+      console.log([selectedPlace, ...userPlaces]);
+      await fetchUpdatePlaces([selectedPlace, ...userPlaces]);
+    } catch (error) {
+      setUserPlaces(userPlaces);
+      setUpdatePlacesError((prop) => ({
+        ...prop,
+        message: error.message || 'Failed to update place',
+      }));
+    }
   }
 
   const handleRemovePlace = useCallback(async function handleRemovePlace() {
-    setUserPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
-    );
+    let prevPlaces = [];
+    setUserPlaces((prevPickedPlaces) => {
+      prevPlaces = [...prevPickedPlaces];
+      return prevPickedPlaces.filter(
+        (place) => place.id !== selectedPlace.current.id
+      );
+    });
+
+    try {
+      await fetchUpdatePlaces(
+        prevPlaces.filter((place) => {
+          console.log(place.id);
+          return place.id !== selectedPlace.current.id;
+        })
+      );
+    } catch (error) {
+      setUserPlaces(prevPlaces);
+      setUpdatePlacesError((prev) => ({
+        ...prev,
+        message: error.message || 'Failed to delete place',
+      }));
+    }
 
     setModalIsOpen(false);
   }, []);
 
+  function handleUpdatePlacesError() {
+    setUpdatePlacesError();
+  }
+
   return (
     <>
+      <Modal open={updatePlacesError} onClose={handleUpdatePlacesError}>
+        <Error
+          title={'Sorry... Fail Occurred'}
+          message={updatePlacesError?.message}
+          onConfirm={handleUpdatePlacesError}
+        />
+      </Modal>
+
       <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
@@ -65,12 +128,20 @@ function App() {
         </p>
       </header>
       <main>
-        <Places
-          title="I'd like to visit ..."
-          fallbackText="Select the places you would like to visit below."
-          places={userPlaces}
-          onSelectPlace={handleStartRemovePlace}
-        />
+        {!fetchUserPlacesError ? (
+          <Places
+            title="I'd like to visit ..."
+            isLoading={isFetching}
+            fallbackText="places is loading..."
+            places={userPlaces}
+            onSelectPlace={handleStartRemovePlace}
+          />
+        ) : (
+          <Error
+            title={'Sorry... Fail Occurred'}
+            message={fetchUserPlacesError?.message}
+          />
+        )}
 
         <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>

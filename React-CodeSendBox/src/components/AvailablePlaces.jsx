@@ -25,7 +25,7 @@ export default function AvailablePlaces({ onSelectPlace }) {
           setIsFetching(false);
         });
       } catch (error) {
-        setError({ message: error.message || 'Failed to call getPlaces api' });
+        setError({ message: error.message || 'Failed to get all place' });
       }
       setIsFetching(false);
     }
