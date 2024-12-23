@@ -19,6 +19,7 @@ export default [
       'prefer-const': 'warn',
       'no-constant-binary-expression': 'error',
       'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
     },
   },
 ];

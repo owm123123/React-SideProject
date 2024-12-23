@@ -11,6 +11,7 @@ export function useFetch(callBackFn, init) {
       setIsFetching(true);
       try {
         const places = await callBackFn();
+        console.log(places);
         setFetchedData(places);
       } catch (error) {
         setError({
