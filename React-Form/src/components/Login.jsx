@@ -1,24 +1,30 @@
+import { useRef } from 'react';
 import { useState } from 'react';
 
 export default function Login() {
-  const [enteredValue, setEnteredValue] = useState({
-    email: '',
-    password: '',
-  });
+  // const [enteredValue, setEnteredValue] = useState({
+  //   email: '',
+  //   password: '',
+  // });
+  const enteredEmail = useRef();
+  const enteredPassword = useRef();
 
   function handleSubmit(event) {
     event.preventDefault();
+    // console.log(
+    //   `email: ${enteredValue.email}, password: ${enteredValue.password}`
+    // );
     console.log(
-      `email: ${enteredValue.email}, password: ${enteredValue.password}`
+      `email: ${enteredEmail.current.value}, password: ${enteredPassword.current.value}`
     );
   }
 
-  function handleEnteredValue(id, value) {
-    setEnteredValue((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  }
+  // function handleEnteredValue(id, value) {
+  //   setEnteredValue((prev) => ({
+  //     ...prev,
+  //     [id]: value,
+  //   }));
+  // }
 
   return (
     // 在form的button中,default的type都是submit
@@ -33,10 +39,11 @@ export default function Login() {
             id="email"
             type="email"
             name="email"
-            onChange={(event) =>
-              handleEnteredValue('email', event.target.value)
-            }
-            value={enteredValue.email}
+            // onChange={(event) =>
+            //   handleEnteredValue('email', event.target.value)
+            // }
+            // value={enteredValue.email}
+            ref={enteredEmail}
           />
         </div>
 
@@ -46,10 +53,11 @@ export default function Login() {
             id="password"
             type="password"
             name="password"
-            onChange={(event) =>
-              handleEnteredValue('password', event.target.value)
-            }
-            value={enteredValue.password}
+            // onChange={(event) =>
+            //   handleEnteredValue('password', event.target.value)
+            // }
+            // value={enteredValue.password}
+            ref={enteredPassword}
           />
         </div>
       </div>
