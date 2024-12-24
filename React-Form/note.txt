@@ -1,0 +1,20 @@
+useRef VS useState
+    useRef：
+    用於取得表單的最終值（如提交時）。
+    處理需要直接操作 DOM 的場景（如聚焦輸入框）。
+    保持跨渲染的非狀態資料（如計時器 ID 或前一次值）。
+    useState：
+    用於即時追蹤輸入的變化。
+    更新 UI 狀態（如顯示或隱藏錯誤訊息）。
+
+FormData & Object.fromEntries
+    const formData = new FormData(event.target);
+    let email = formData.get('email');
+    let password = formData.get('password');
+
+    formData note:
+    1. event.target = form element
+    2. formData show {}, need formData.get('');
+
+
+    const obj = Object.fromEntries(formData); //form input convert object
