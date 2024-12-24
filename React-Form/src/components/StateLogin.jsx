@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Input from './Input';
 
 export default function StateLogin() {
   const [enteredValue, setEnteredValue] = useState({
@@ -38,6 +39,8 @@ export default function StateLogin() {
 
   const isInValidEmail =
     didEdit.email === true && !enteredValue.email.includes('@');
+  const isInValidPwd =
+    didEdit.password === true && !enteredValue.password.trim().length() > 6;
 
   return (
     // 在form的button中,default的type都是submit
@@ -46,35 +49,29 @@ export default function StateLogin() {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            onBlur={() => handleOnBlur('email')}
-            onChange={(event) =>
-              handleEnteredValue('email', event.target.value)
-            }
-            value={enteredValue.email}
-          />
-          <div className="control-error">
-            {isInValidEmail && <span>entered email is invalid!</span>}
-          </div>
-        </div>
+        <Input
+          label="Email"
+          id="email"
+          type="email"
+          name="email"
+          onBlur={() => handleOnBlur('email')}
+          onChange={(event) => handleEnteredValue('email', event.target.value)}
+          value={enteredValue.email}
+          error={isInValidEmail && 'entered email is invalid!'}
+        />
 
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            onChange={(event) =>
-              handleEnteredValue('password', event.target.value)
-            }
-            value={enteredValue.password}
-          />
-        </div>
+        <Input
+          label="Password"
+          id="password"
+          type="password"
+          name="password"
+          onBlur={() => handleOnBlur('password')}
+          onChange={(event) =>
+            handleEnteredValue('password', event.target.value)
+          }
+          value={enteredValue.password}
+          error={isInValidPwd && 'entered password is invalid!'}
+        />
       </div>
 
       <p className="form-actions">
