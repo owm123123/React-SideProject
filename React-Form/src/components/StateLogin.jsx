@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Input from './Input';
+import { isEmail, hasMinLength, isNotEmpty } from '../util/validation';
 
 export default function StateLogin() {
   const [enteredValue, setEnteredValue] = useState({
@@ -38,9 +39,13 @@ export default function StateLogin() {
   }
 
   const isInValidEmail =
-    didEdit.email === true && !enteredValue.email.includes('@');
+    didEdit.email === true &&
+    !isEmail(enteredValue.email) &&
+    !isNotEmpty(enteredValue.email);
   const isInValidPwd =
-    didEdit.password === true && !enteredValue.password.trim().length() > 6;
+    didEdit.password === true &&
+    !hasMinLength(enteredValue.password.trim(), 6) &&
+    !isNotEmpty(enteredValue.password.trim());
 
   return (
     // 在form的button中,default的type都是submit
@@ -52,7 +57,7 @@ export default function StateLogin() {
         <Input
           label="Email"
           id="email"
-          type="email"
+          // type="email"
           name="email"
           onBlur={() => handleOnBlur('email')}
           onChange={(event) => handleEnteredValue('email', event.target.value)}
