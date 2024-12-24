@@ -6,6 +6,11 @@ export default function StateLogin() {
     password: '',
   });
 
+  const [didEdit, setDidEdit] = useState({
+    email: false,
+    password: false,
+  });
+
   function handleSubmit(event) {
     event.preventDefault();
     console.log(
@@ -13,12 +18,26 @@ export default function StateLogin() {
     );
   }
 
+  function handleOnBlur(id) {
+    setDidEdit((prev) => ({
+      ...prev,
+      [id]: true,
+    }));
+  }
+
   function handleEnteredValue(id, value) {
     setEnteredValue((prev) => ({
       ...prev,
       [id]: value,
     }));
+    setDidEdit((prev) => ({
+      ...prev,
+      [id]: false,
+    }));
   }
+
+  const isInValidEmail =
+    didEdit.email === true && !enteredValue.email.includes('@');
 
   return (
     // 在form的button中,default的type都是submit
@@ -33,11 +52,15 @@ export default function StateLogin() {
             id="email"
             type="email"
             name="email"
+            onBlur={() => handleOnBlur('email')}
             onChange={(event) =>
               handleEnteredValue('email', event.target.value)
             }
             value={enteredValue.email}
           />
+          <div className="control-error">
+            {isInValidEmail && <span>entered email is invalid!</span>}
+          </div>
         </div>
 
         <div className="control no-margin">
