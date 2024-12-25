@@ -1,51 +1,29 @@
-import { useState } from 'react';
 import Input from './Input';
 import { isEmail, hasMinLength, isNotEmpty } from '../util/validation';
+import useInput from '../hooks/useInput';
 
 export default function StateLogin() {
-  const [enteredValue, setEnteredValue] = useState({
-    email: '',
-    password: '',
-  });
-
-  const [didEdit, setDidEdit] = useState({
-    email: false,
-    password: false,
-  });
-
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(
-      `email: ${enteredValue.email}, password: ${enteredValue.password}`
-    );
   }
 
-  function handleOnBlur(id) {
-    setDidEdit((prev) => ({
-      ...prev,
-      [id]: true,
-    }));
-  }
+  const {
+    enteredValue: emailValue,
+    handleEnteredValue: handleEnteredEmailValue,
+    handleOnBlur: handleEmailOnBlur,
+    hasError: emailHasError,
+  } = useInput('', (value) => {
+    return !isEmail(value) || !isNotEmpty(value);
+  });
 
-  function handleEnteredValue(id, value) {
-    setEnteredValue((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-    setDidEdit((prev) => ({
-      ...prev,
-      [id]: false,
-    }));
-  }
-
-  const isInValidEmail =
-    didEdit.email === true &&
-    !isEmail(enteredValue.email) &&
-    !isNotEmpty(enteredValue.email);
-  const isInValidPwd =
-    didEdit.password === true &&
-    !hasMinLength(enteredValue.password.trim(), 6) &&
-    !isNotEmpty(enteredValue.password.trim());
+  const {
+    enteredValue: passwordValue,
+    handleEnteredValue: handleEnteredPasswordValue,
+    handleOnBlur: handlePasswordOnBlur,
+    hasError: passwordHasError,
+  } = useInput('', (value) => {
+    return !hasMinLength(value.trim(), 6) || !isNotEmpty(value.trim());
+  });
 
   return (
     // 在form的button中,default的type都是submit
@@ -59,10 +37,10 @@ export default function StateLogin() {
           id="email"
           // type="email"
           name="email"
-          onBlur={() => handleOnBlur('email')}
-          onChange={(event) => handleEnteredValue('email', event.target.value)}
-          value={enteredValue.email}
-          error={isInValidEmail && 'entered email is invalid!'}
+          onBlur={handleEmailOnBlur}
+          onChange={(event) => handleEnteredEmailValue(event)}
+          value={emailValue}
+          error={emailHasError && 'entered email is invalid!'}
         />
 
         <Input
@@ -70,12 +48,10 @@ export default function StateLogin() {
           id="password"
           type="password"
           name="password"
-          onBlur={() => handleOnBlur('password')}
-          onChange={(event) =>
-            handleEnteredValue('password', event.target.value)
-          }
-          value={enteredValue.password}
-          error={isInValidPwd && 'entered password is invalid!'}
+          onBlur={handlePasswordOnBlur}
+          onChange={(event) => handleEnteredPasswordValue(event)}
+          value={passwordValue}
+          error={passwordHasError && 'entered password is invalid!'}
         />
       </div>
 
