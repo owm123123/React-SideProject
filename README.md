@@ -9,7 +9,7 @@
 
 # command line
 
-npx eslint init
+npm init @eslint/config@latest
 
 # eslint.config.js
 
