@@ -1,6 +1,65 @@
+import { useActionState } from 'react';
+import {
+  isNotEmpty,
+  isEmail,
+  isEqualsToOtherValue,
+  hasMinLength,
+} from '../../../React-Form/src/util/validation';
+
 export default function Signup() {
+  function submitSignup(pervData, formData) {
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm-password');
+    const firstName = formData.get('first-name');
+    const lastName = formData.get('last-name');
+    const role = formData.get('role');
+    const acquisition = formData.getAll('acquisition');
+    const terms = formData.get('terms');
+
+    const errors = [];
+    if (!isEmail(email) || !isNotEmpty(email)) {
+      errors.push('email error');
+    }
+    if (!isNotEmpty(password) || !hasMinLength(password, 6)) {
+      errors.push('password error');
+    }
+    if (!isEqualsToOtherValue(password, confirmPassword)) {
+      errors.push('password and confirmPassword not match');
+    }
+    if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
+      errors.push('firstName or lastName error');
+    }
+    if (!isNotEmpty(role)) {
+      errors.push('role error');
+    }
+    console.log(`acquisition: ${acquisition}`);
+    if (acquisition.length === 0) {
+      errors.push('role error');
+    }
+    if (!terms) {
+      errors.push('terms error');
+    }
+
+    if (errors.length !== 0) {
+      return { errors };
+    }
+
+    return { errors: null };
+  }
+
+  // const [state, formAction, isPending] = useActionState(fn, initialState, permalink?);
+  // state: Fn return value
+  // formAction: 調用formAction時,會再次觸發Fn
+
+  // fn: async function
+  // initialState: fn的initState
+  const [formState, formAction] = useActionState(submitSignup, {
+    errors: null,
+  });
+
   return (
-    <form>
+    <form action={formAction}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
@@ -84,6 +143,14 @@ export default function Signup() {
           agree to the terms and conditions
         </label>
       </div>
+
+      {formState.errors && (
+        <ul className="error">
+          {formState.errors.map((error) => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
 
       <p className="form-actions">
         <button type="reset" className="button button-flat">
