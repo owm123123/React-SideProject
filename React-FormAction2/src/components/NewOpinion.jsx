@@ -1,7 +1,12 @@
+import { use } from 'react';
 import { useActionState } from 'react';
+import { OpinionsContext } from '../store/opinions-context';
+import Submit from './Submit';
 
 export function NewOpinion() {
-  function optionFormAction(prevData, formData) {
+  const { addOpinion } = use(OpinionsContext);
+
+  async function optionFormAction(prevData, formData) {
     const userName = formData.get('userName');
     const title = formData.get('title');
     const body = formData.get('body');
@@ -27,6 +32,8 @@ export function NewOpinion() {
         },
       };
     }
+
+    await addOpinion({ userName, title, body });
 
     return { errors: null };
   }
@@ -78,9 +85,7 @@ export function NewOpinion() {
           </ul>
         )}
 
-        <p className="actions">
-          <button type="submit">Submit</button>
-        </p>
+        <Submit />
       </form>
     </div>
   );
