@@ -2,14 +2,14 @@
   "opinions": [
     {
       "id": 1735215545351,
-      "votes": 0,
+      "votes": 6,
       "userName": "lung hao",
       "title": "useFormStatus test",
       "body": "learn useFormStatus React hook track form action"
     },
     {
       "id": 1735213277698,
-      "votes": 0,
+      "votes": 3,
       "userName": "player1",
       "title": "React Test",
       "body": "player1 first login React Test"

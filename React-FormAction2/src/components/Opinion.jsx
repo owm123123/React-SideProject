@@ -1,11 +1,23 @@
+import { use } from 'react';
+import { OpinionsContext } from '../store/opinions-context';
+import { useActionState } from 'react';
+
 export function Opinion({ opinion: { id, title, body, userName, votes } }) {
-  function upvoteAciton() {
-    console.log('UPVOTE');
+  const { upvoteOpinion, downvoteOpinion } = use(OpinionsContext);
+
+  const [upvoteFormState, upvoteFormAction, upvotePadding] =
+    useActionState(upvoteAciton);
+  const [downvoteFormState, downvoteFormAction, downvotePadding] =
+    useActionState(downvoteAciton);
+
+  async function upvoteAciton() {
+    return await upvoteOpinion(id);
   }
 
-  function downvoteAciton() {
-    console.log('DOWNVOTE');
+  async function downvoteAciton() {
+    return await downvoteOpinion(id);
   }
+
   return (
     <article>
       <header>
@@ -14,7 +26,10 @@ export function Opinion({ opinion: { id, title, body, userName, votes } }) {
       </header>
       <p>{body}</p>
       <form className="votes">
-        <button formAction={upvoteAciton}>
+        <button
+          formAction={upvoteFormAction}
+          disabled={upvotePadding || downvotePadding}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -34,7 +49,10 @@ export function Opinion({ opinion: { id, title, body, userName, votes } }) {
 
         <span>{votes}</span>
 
-        <button formAction={downvoteAciton}>
+        <button
+          formAction={downvoteFormAction}
+          disabled={upvotePadding || downvotePadding}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
