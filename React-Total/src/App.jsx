@@ -1,13 +1,13 @@
 import Header from './components/Header';
 import Meals from './components/Meals';
-import { CartContextProvide } from './store/CartContext';
+import { CartContextProvider } from './store/CartContext';
 
 function App() {
   return (
-    <CartContextProvide>
+    <CartContextProvider>
       <Header />
       <Meals />
-    </CartContextProvide>
+    </CartContextProvider>
   );
 }
 

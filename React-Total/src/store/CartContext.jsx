@@ -62,7 +62,7 @@ const cartReducer = (state, action) => {
   return { state };
 };
 
-export function CartContextProvide({ children }) {
+export function CartContextProvider({ children }) {
   const [cart, dispatchCartAction] = useReducer(cartReducer, { items: [] });
 
   function addItem(item) {
@@ -79,8 +79,6 @@ export function CartContextProvide({ children }) {
     addItem,
     removeItem,
   };
-
-  console.log(cart);
 
   return (
     // 記得要給value()
