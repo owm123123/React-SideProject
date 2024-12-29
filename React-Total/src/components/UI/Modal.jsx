@@ -5,10 +5,14 @@ export default function Modal({ children, open, className }) {
   const dialog = useRef();
 
   useEffect(() => {
-    if (open) {
-      dialog.current.showModal();
-    }
-  }, open);
+    const modal = dialog.current;
+
+    // TODO: 可再加強 useEffect return 的觸發時機
+    if (open) modal.showModal();
+    return () => {
+      modal.close();
+    };
+  }, [open]);
 
   return (
     <>

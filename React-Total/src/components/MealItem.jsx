@@ -21,7 +21,7 @@ export default function MealItem({ meal }) {
           <p className="meal-item-description">{meal.decription}</p>
         </div>
         <p className="meal-item-actions">
-          <Button onClick={handleAddCart}>Add to Cart</Button>
+          <Button onClick={() => handleAddCart(meal)}>Add to Cart</Button>
         </p>
       </article>
     </li>

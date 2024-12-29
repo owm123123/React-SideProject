@@ -59,7 +59,7 @@ const cartReducer = (state, action) => {
       return { ...state, items: updatedItems };
     }
   }
-  return { state };
+  return state;
 };
 
 export function CartContextProvider({ children }) {
@@ -79,6 +79,8 @@ export function CartContextProvider({ children }) {
     addItem,
     removeItem,
   };
+
+  console.log(cart);
 
   return (
     // 記得要給value()
