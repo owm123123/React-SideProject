@@ -31,11 +31,11 @@ const cartReducer = (state, action) => {
         };
         updatedItems[existingCartIndex] = updateItem;
       }
-      return updatedItems;
+      return { ...state, items: updatedItems };
     }
     case 'REMOVE_ITEM': {
       const existingCartIndex = state.items.findIndex(
-        (item) => item.id === action.item.id
+        (item) => item.id === action.id
       );
       const updatedItems = { ...state.items };
 
@@ -56,16 +56,36 @@ const cartReducer = (state, action) => {
         };
         updatedItems[existingCartIndex] = updateItem;
       }
-      return updatedItems;
+      return { ...state, items: updatedItems };
     }
   }
-  return state;
+  return { state };
 };
 
 export function CartContextProvide({ children }) {
   const [cart, dispatchCartAction] = useReducer(cartReducer, { items: [] });
 
-  return <CartContext.Provider>{children}</CartContext.Provider>;
+  function addItem(item) {
+    dispatchCartAction({ type: 'ADD_ITEM', item });
+  }
+
+  function removeItem(id) {
+    dispatchCartAction({ type: 'REMOVE_ITEM', id });
+  }
+
+  // 為了給Provider傳送value建立
+  const cartContext = {
+    items: cart.items,
+    addItem,
+    removeItem,
+  };
+
+  console.log(cart);
+
+  return (
+    // 記得要給value()
+    <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>
+  );
 }
 
 export default CartContext;
