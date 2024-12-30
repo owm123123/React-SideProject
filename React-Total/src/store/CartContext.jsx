@@ -37,7 +37,7 @@ const cartReducer = (state, action) => {
       const existingCartIndex = state.items.findIndex(
         (item) => item.id === action.id
       );
-      const updatedItems = { ...state.items };
+      const updatedItems = [...state.items];
 
       if (state.items[existingCartIndex].quantity === 1) {
         // slice() & splice() & split()
