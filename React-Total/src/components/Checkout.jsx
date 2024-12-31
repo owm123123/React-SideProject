@@ -8,6 +8,7 @@ import Button from './UI/Button';
 import UserProgressContext from '../store/UserProgressContext';
 import useHttp from '../hooks/useHttp';
 import Error from './Error';
+import { useActionState } from 'react';
 
 export default function Checkout() {
   const { data, isLoading, error, sendRequest, cleanData } = useHttp(
@@ -37,11 +38,9 @@ export default function Checkout() {
     cleanData();
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const fd = new FormData(event.target);
+  async function submitAction(prevfd, fd) {
     const customerData = Object.fromEntries(fd.entries());
-    sendRequest(
+    await sendRequest(
       JSON.stringify({
         order: {
           items: cartCtx.items,
@@ -50,6 +49,8 @@ export default function Checkout() {
       })
     );
   }
+
+  const [formState, formAction, isPadding] = useActionState(submitAction, {});
 
   let action = (
     <>
@@ -60,7 +61,7 @@ export default function Checkout() {
     </>
   );
 
-  if (isLoading) {
+  if (isPadding) {
     action = 'loading...';
   }
 
@@ -88,7 +89,7 @@ export default function Checkout() {
       open={userProgressCtx.progress === 'checkout'}
       onClose={userProgressCtx.progress === 'checkout' ? handleOnClose : null}
     >
-      <form onSubmit={handleSubmit}>
+      <form action={formAction}>
         <h2>Checkout</h2>
         <p>Total Amount: {currencyFormattor.format(totalPrice)}</p>
         <Input label="Full Name" type="text" id="name" />
