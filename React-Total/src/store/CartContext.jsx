@@ -5,6 +5,7 @@ const CartContext = createContext({
   items: [],
   addItem: (item) => {},
   removeItem: (id) => {},
+  cleanItems: () => {},
 });
 
 const cartReducer = (state, action) => {
@@ -58,6 +59,10 @@ const cartReducer = (state, action) => {
       }
       return { ...state, items: updatedItems };
     }
+
+    case 'CLEAN_ITEMS': {
+      return { ...state, items: [] };
+    }
   }
   return state;
 };
@@ -73,11 +78,16 @@ export function CartContextProvider({ children }) {
     dispatchCartAction({ type: 'REMOVE_ITEM', id });
   }
 
+  function cleanItems() {
+    dispatchCartAction({ type: 'CLEAN_ITEMS' });
+  }
+
   // 為了給Provider傳送value建立
   const cartContext = {
     items: cart.items,
     addItem,
     removeItem,
+    cleanItems,
   };
 
   console.log(cart);
